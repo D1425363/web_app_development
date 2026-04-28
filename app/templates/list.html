@@ -3,35 +3,118 @@
 {% block title %}收支明細與新增 | 個人記帳簿{% endblock %}
 
 {% block content %}
-    <h1>收支明細</h1>
+<div class="row">
+    <!-- 左側：新增表單 -->
+    <div class="col-lg-4 mb-4">
+        <div class="glass-card p-4 sticky-lg-top" style="top: 80px;">
+            <h4 class="mb-4"><i class="bi bi-pencil-square me-2"></i>新增收支</h4>
+            <form action="{{ url_for('transaction.create_transaction') }}" method="POST">
+                <div class="mb-3">
+                    <label class="form-label text-secondary small">類型</label>
+                    <div class="d-flex gap-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="type" id="typeExpense" value="expense" checked>
+                            <label class="form-check-label text-expense" for="typeExpense">支出</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="type" id="typeIncome" value="income">
+                            <label class="form-check-label text-income" for="typeIncome">收入</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="amount" class="form-label text-secondary small">金額 <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0 border-secondary text-secondary">$</span>
+                        <input type="number" class="form-control border-start-0" id="amount" name="amount" min="0" step="0.01" required placeholder="0">
+                    </div>
+                </div>
 
-    <section class="add-transaction">
-        <h2>新增收支</h2>
-        <!-- 新增收支的 HTML 表單，action 指向 url_for('transaction.create_transaction') -->
-        <form action="{{ url_for('transaction.create_transaction') }}" method="POST">
-            <!-- 欄位: type, amount, category, date, note -->
-        </form>
-    </section>
+                <div class="mb-3">
+                    <label for="category" class="form-label text-secondary small">分類 <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="category" name="category" required placeholder="例如：早餐、交通、薪水">
+                </div>
 
-    <section class="transaction-list">
-        <h2>所有歷史明細</h2>
-        <!-- 表格或列表顯示所有的收支紀錄 -->
-        <table>
-            <thead>
-                <tr>
-                    <th>日期</th>
-                    <th>類型</th>
-                    <th>分類</th>
-                    <th>金額</th>
-                    <th>備註</th>
-                    <th>操作</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- {% for t in transactions %} -->
-                <!-- 迴圈顯示每筆明細，操作欄包含編輯與刪除按鈕 -->
-                <!-- {% endfor %} -->
-            </tbody>
-        </table>
-    </section>
+                <div class="mb-3">
+                    <label for="date" class="form-label text-secondary small">日期 <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" id="date" name="date" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="note" class="form-label text-secondary small">備註 (選填)</label>
+                    <textarea class="form-control" id="note" name="note" rows="2" placeholder="紀錄詳細內容..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">新增紀錄</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 右側：歷史明細 -->
+    <div class="col-lg-8">
+        <h4 class="mb-4"><i class="bi bi-clock-history me-2"></i>所有明細</h4>
+        <div class="glass-card overflow-hidden">
+            {% if transactions %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="table-dark bg-transparent">
+                        <tr>
+                            <th class="py-3 px-4 border-bottom-0">日期</th>
+                            <th class="py-3 border-bottom-0">分類</th>
+                            <th class="py-3 border-bottom-0">備註</th>
+                            <th class="py-3 text-end border-bottom-0">金額</th>
+                            <th class="py-3 text-center border-bottom-0">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in transactions %}
+                        <tr>
+                            <td class="px-4 text-secondary">{{ t.date }}</td>
+                            <td>
+                                <span class="badge bg-secondary bg-opacity-25 {{ 'text-income' if t.type == 'income' else 'text-expense' }} fw-normal px-2 py-1 rounded">
+                                    {{ t.category }}
+                                </span>
+                            </td>
+                            <td class="text-secondary small text-truncate" style="max-width: 150px;" title="{{ t.note }}">{{ t.note }}</td>
+                            <td class="text-end fw-bold {{ 'text-income' if t.type == 'income' else 'text-expense' }}">
+                                {{ '+' if t.type == 'income' else '-' }}${{ "{:,.0f}".format(t.amount) }}
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{{ url_for('transaction.edit_transaction', id=t.id) }}" class="btn btn-outline-secondary border-0" title="編輯">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form action="{{ url_for('transaction.delete_transaction', id=t.id) }}" method="POST" class="d-inline" onsubmit="return confirm('確定要刪除這筆紀錄嗎？');">
+                                        <button type="submit" class="btn btn-outline-danger border-0" title="刪除">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="p-5 text-center text-secondary">
+                <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+                <p class="mb-0">目前還沒有任何紀錄</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- 自動設定今天的日期 -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const dateInput = document.getElementById('date');
+        if (!dateInput.value) {
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.value = today;
+        }
+    });
+</script>
 {% endblock %}

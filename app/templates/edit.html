@@ -3,14 +3,58 @@
 {% block title %}編輯收支 | 個人記帳簿{% endblock %}
 
 {% block content %}
-    <h1>編輯收支紀錄</h1>
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="glass-card p-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="mb-0">編輯紀錄</h3>
+                <a href="{{ url_for('transaction.list_transactions') }}" class="btn btn-outline-secondary btn-sm rounded-pill"><i class="bi bi-arrow-left"></i> 返回列表</a>
+            </div>
+            
+            <form action="{{ url_for('transaction.update_transaction', id=transaction.id) }}" method="POST">
+                <div class="mb-4">
+                    <label class="form-label text-secondary small">類型</label>
+                    <div class="d-flex gap-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="type" id="typeExpense" value="expense" {{ 'checked' if transaction.type == 'expense' else '' }}>
+                            <label class="form-check-label text-expense" for="typeExpense">支出</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="type" id="typeIncome" value="income" {{ 'checked' if transaction.type == 'income' else '' }}>
+                            <label class="form-check-label text-income" for="typeIncome">收入</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="amount" class="form-label text-secondary small">金額 <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0 border-secondary text-secondary">$</span>
+                        <input type="number" class="form-control border-start-0" id="amount" name="amount" min="0" step="0.01" required value="{{ transaction.amount }}">
+                    </div>
+                </div>
 
-    <section class="edit-transaction">
-        <!-- 編輯收支的 HTML 表單，action 指向 url_for('transaction.update_transaction', id=transaction.id) -->
-        <!-- method 為 POST -->
-        <form action="#" method="POST">
-            <!-- 欄位: type, amount, category, date, note -->
-            <!-- 輸入框預設帶入 transaction 的資料，例如 value="{{ transaction.amount }}" -->
-        </form>
-    </section>
+                <div class="mb-4">
+                    <label for="category" class="form-label text-secondary small">分類 <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="category" name="category" required value="{{ transaction.category }}">
+                </div>
+
+                <div class="mb-4">
+                    <label for="date" class="form-label text-secondary small">日期 <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" id="date" name="date" required value="{{ transaction.date }}">
+                </div>
+
+                <div class="mb-5">
+                    <label for="note" class="form-label text-secondary small">備註 (選填)</label>
+                    <textarea class="form-control" id="note" name="note" rows="3">{{ transaction.note }}</textarea>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary flex-grow-1 py-2 fw-bold">儲存變更</button>
+                    <a href="{{ url_for('transaction.list_transactions') }}" class="btn btn-outline-light py-2 px-4">取消</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

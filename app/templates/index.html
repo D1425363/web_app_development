@@ -3,16 +3,79 @@
 {% block title %}首頁 - 統計總覽 | 個人記帳簿{% endblock %}
 
 {% block content %}
-    <h1>首頁統計與總覽</h1>
-    
-    <section class="dashboard">
-        <h2>當月餘額</h2>
-        <!-- 顯示當月總收入、總支出與結餘的卡片 -->
-        <!-- {{ total_income }}, {{ total_expense }}, {{ balance }} -->
-    </section>
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <h2 class="mb-4">本月統計 <span class="badge bg-secondary fs-6 align-middle ms-2">{{ current_month }}</span></h2>
+        
+        <!-- 當月餘額卡片 -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="glass-card p-4 text-center h-100">
+                    <h5 class="text-secondary mb-3">總收入</h5>
+                    <h2 class="text-income mb-0">$ {{ "{:,.0f}".format(total_income) }}</h2>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card p-4 text-center h-100">
+                    <h5 class="text-secondary mb-3">總支出</h5>
+                    <h2 class="text-expense mb-0">$ {{ "{:,.0f}".format(total_expense) }}</h2>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card p-4 text-center h-100 position-relative overflow-hidden">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-primary opacity-10" style="z-index: 0;"></div>
+                    <div class="position-relative" style="z-index: 1;">
+                        <h5 class="text-secondary mb-3">目前結餘</h5>
+                        <h2 class="{{ 'text-income' if balance >= 0 else 'text-expense' }} fw-bold mb-0">
+                            $ {{ "{:,.0f}".format(balance) }}
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <section class="recent-transactions">
-        <h2>最近明細</h2>
-        <!-- 顯示最近幾筆紀錄的簡化列表 -->
-    </section>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-0">最近明細</h3>
+            <a href="{{ url_for('transaction.list_transactions') }}" class="btn btn-outline-light btn-sm rounded-pill px-3">查看全部 <i class="bi bi-arrow-right"></i></a>
+        </div>
+
+        <div class="glass-card overflow-hidden">
+            {% if recent_transactions %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 text-center align-middle">
+                    <thead class="table-dark bg-transparent">
+                        <tr>
+                            <th class="py-3 border-bottom-0">日期</th>
+                            <th class="py-3 border-bottom-0">分類</th>
+                            <th class="py-3 border-bottom-0">金額</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in recent_transactions %}
+                        <tr>
+                            <td class="text-secondary">{{ t.date }}</td>
+                            <td>
+                                <span class="badge bg-secondary bg-opacity-50 text-light fw-normal px-3 py-2 rounded-pill">
+                                    <i class="bi {{ 'bi-arrow-down-circle text-income' if t.type == 'income' else 'bi-arrow-up-circle text-expense' }} me-1"></i>
+                                    {{ t.category }}
+                                </span>
+                            </td>
+                            <td class="fw-bold {{ 'text-income' if t.type == 'income' else 'text-expense' }}">
+                                {{ '+' if t.type == 'income' else '-' }}${{ "{:,.0f}".format(t.amount) }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="p-5 text-center text-secondary">
+                <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+                <p class="mb-0">目前還沒有任何紀錄</p>
+                <a href="{{ url_for('transaction.list_transactions') }}" class="btn btn-primary mt-3">去記一筆</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
 {% endblock %}

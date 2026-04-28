@@ -1,39 +1,67 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-Hant" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}個人記帳簿{% endblock %}</title>
-    <!-- 未來這裡將會載入自訂的 CSS 檔案 -->
-    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> -->
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <header>
-        <nav>
-            <!-- 導覽列 -->
-            <a href="{{ url_for('index.home') }}">首頁</a>
-            <a href="{{ url_for('transaction.list_transactions') }}">收支明細</a>
-        </nav>
-    </header>
-
-    <main>
-        <!-- 顯示 Flash 訊息 -->
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <ul class="flashes">
-                {% for message in messages %}
-                    <li>{{ message }}</li>
-                {% endfor %}
+    <!-- 導覽列 -->
+    <nav class="navbar navbar-expand-lg sticky-top mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index.home') }}">
+                <i class="bi bi-wallet2 me-2"></i>個人記帳簿
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'index.home' else '' }}" href="{{ url_for('index.home') }}">總覽</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'transaction.list_transactions' else '' }}" href="{{ url_for('transaction.list_transactions') }}">收支明細</a>
+                    </li>
                 </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mb-5">
+        <!-- Flash 訊息 -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="row justify-content-center mb-4">
+                    <div class="col-lg-8">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show glass-card border-0" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
             {% endif %}
         {% endwith %}
 
-        <!-- 主要內容區塊 -->
+        <!-- 主要內容 -->
         {% block content %}{% endblock %}
     </main>
 
-    <footer>
-        <p>&copy; 2026 個人記帳簿</p>
+    <footer class="text-center mt-auto py-3 text-secondary">
+        <div class="container">
+            <small>&copy; 2026 個人記帳簿 - Designed for Students</small>
+        </div>
     </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
