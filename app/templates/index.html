@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}首頁 - 統計總覽 | 個人記帳簿{% endblock %}
+
+{% block content %}
+    <h1>首頁統計與總覽</h1>
+    
+    <section class="dashboard">
+        <h2>當月餘額</h2>
+        <!-- 顯示當月總收入、總支出與結餘的卡片 -->
+        <!-- {{ total_income }}, {{ total_expense }}, {{ balance }} -->
+    </section>
+
+    <section class="recent-transactions">
+        <h2>最近明細</h2>
+        <!-- 顯示最近幾筆紀錄的簡化列表 -->
+    </section>
+{% endblock %}

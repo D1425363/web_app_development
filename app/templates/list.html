@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}收支明細與新增 | 個人記帳簿{% endblock %}
+
+{% block content %}
+    <h1>收支明細</h1>
+
+    <section class="add-transaction">
+        <h2>新增收支</h2>
+        <!-- 新增收支的 HTML 表單，action 指向 url_for('transaction.create_transaction') -->
+        <form action="{{ url_for('transaction.create_transaction') }}" method="POST">
+            <!-- 欄位: type, amount, category, date, note -->
+        </form>
+    </section>
+
+    <section class="transaction-list">
+        <h2>所有歷史明細</h2>
+        <!-- 表格或列表顯示所有的收支紀錄 -->
+        <table>
+            <thead>
+                <tr>
+                    <th>日期</th>
+                    <th>類型</th>
+                    <th>分類</th>
+                    <th>金額</th>
+                    <th>備註</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- {% for t in transactions %} -->
+                <!-- 迴圈顯示每筆明細，操作欄包含編輯與刪除按鈕 -->
+                <!-- {% endfor %} -->
+            </tbody>
+        </table>
+    </section>
+{% endblock %}

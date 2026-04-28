@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}個人記帳簿{% endblock %}</title>
+    <!-- 未來這裡將會載入自訂的 CSS 檔案 -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> -->
+</head>
+<body>
+    <header>
+        <nav>
+            <!-- 導覽列 -->
+            <a href="{{ url_for('index.home') }}">首頁</a>
+            <a href="{{ url_for('transaction.list_transactions') }}">收支明細</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- 顯示 Flash 訊息 -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <!-- 主要內容區塊 -->
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2026 個人記帳簿</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}編輯收支 | 個人記帳簿{% endblock %}
+
+{% block content %}
+    <h1>編輯收支紀錄</h1>
+
+    <section class="edit-transaction">
+        <!-- 編輯收支的 HTML 表單，action 指向 url_for('transaction.update_transaction', id=transaction.id) -->
+        <!-- method 為 POST -->
+        <form action="#" method="POST">
+            <!-- 欄位: type, amount, category, date, note -->
+            <!-- 輸入框預設帶入 transaction 的資料，例如 value="{{ transaction.amount }}" -->
+        </form>
+    </section>
+{% endblock %}
